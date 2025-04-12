@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% block title %}Combined Feed{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Your Combined Social Feed</h2>
+
+<div class="row">
+  <!-- Twitter Feed -->
+  <div class="col-md-6">
+    <h4>🐦 Twitter Feed</h4>
+    <ul class="list-group">
+      {% for tweet in twitter_feed %}
+        <li class="list-group-item mb-3">
+          {{ tweet }}
+
+          <!-- Like / Unlike -->
+          <form method="post" class="mt-2 d-inline-block">
+            {% csrf_token %}
+            <input type="hidden" name="content" value="{{ tweet }}">
+            <input type="hidden" name="platform" value="twitter">
+            {% if tweet in liked_contents %}
+              <input type="hidden" name="unlike" value="1">
+              <button class="btn btn-sm btn-danger">💔 Unlike</button>
+            {% else %}
+              <input type="hidden" name="like" value="1">
+              <button class="btn btn-sm btn-outline-primary">🤍 Like</button>
+            {% endif %}
+          </form>
+
+          <!-- Comment Form -->
+          <form method="post" class="mt-2">
+            {% csrf_token %}
+            <input type="hidden" name="content" value="{{ tweet }}">
+            <input type="hidden" name="platform" value="twitter">
+            <div class="input-group">
+              <input type="text" name="comment" class="form-control" placeholder="Write a comment..." required>
+              <button class="btn btn-sm btn-secondary" type="submit">💬 Comment</button>
+            </div>
+          </form>
+
+          <!-- Show Comments -->
+          {% for c in comments %}
+            {% if c.content == tweet and c.platform == 'twitter' %}
+              <p class="text-muted small mt-2 ms-1">💬 {{ c.comment }} <br><small>{{ c.created_at }}</small></p>
+            {% endif %}
+          {% endfor %}
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">No tweets found.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Facebook Feed -->
+  <div class="col-md-6">
+    <h4>📘 Facebook Feed</h4>
+    <ul class="list-group">
+      {% for post in facebook_feed %}
+        <li class="list-group-item mb-3">
+          {{ post }}
+
+          <!-- Like / Unlike -->
+          <form method="post" class="mt-2 d-inline-block">
+            {% csrf_token %}
+            <input type="hidden" name="content" value="{{ post }}">
+            <input type="hidden" name="platform" value="facebook">
+            {% if post in liked_contents %}
+              <input type="hidden" name="unlike" value="1">
+              <button class="btn btn-sm btn-danger">💔 Unlike</button>
+            {% else %}
+              <input type="hidden" name="like" value="1">
+              <button class="btn btn-sm btn-outline-primary">🤍 Like</button>
+            {% endif %}
+          </form>
+
+          <!-- Comment Form -->
+          <form method="post" class="mt-2">
+            {% csrf_token %}
+            <input type="hidden" name="content" value="{{ post }}">
+            <input type="hidden" name="platform" value="facebook">
+            <div class="input-group">
+              <input type="text" name="comment" class="form-control" placeholder="Write a comment..." required>
+              <button class="btn btn-sm btn-secondary" type="submit">💬 Comment</button>
+            </div>
+          </form>
+
+          <!-- Show Comments -->
+          {% for c in comments %}
+            {% if c.content == post and c.platform == 'facebook' %}
+              <p class="text-muted small mt-2 ms-1">💬 {{ c.comment }} <br><small>{{ c.created_at }}</small></p>
+            {% endif %}
+          {% endfor %}
+        </li>
+      {% empty %}
+        <li class="list-group-item text-muted">No Facebook posts found.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}

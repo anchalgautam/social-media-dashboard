@@ -1,0 +1,22 @@
+{% for post in user_posts %}
+  <li class="list-group-item mb-2">
+    <strong>{{ post.platform|title }}</strong><br>
+    {{ post.content }}<br>
+    Scheduled for: {{ post.scheduled_time }}<br>
+    Status: 
+    {% if post.posted %}
+      ✅ Posted
+    {% else %}
+      ⏳ Pending
+    {% endif %}
+
+    <!-- Post Now Button -->
+    {% if not post.posted %}
+    <form method="post" class="d-inline-block mt-2">
+      {% csrf_token %}
+      <input type="hidden" name="post_id" value="{{ post.id }}">
+      <button type="submit" name="post_now" class="btn btn-sm btn-success">📤 Post Now</button>
+    </form>
+    {% endif %}
+  </li>
+{% endfor %}

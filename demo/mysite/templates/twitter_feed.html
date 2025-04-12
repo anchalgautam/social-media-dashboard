@@ -1,0 +1,7 @@
+<h2>Twitter Feed for {{ request.user.profile.twitter_username }}</h2>
+
+<ul>
+  {% for tweet in tweets %}
+    <li>{{ tweet }}</li>
+  {% endfor %}
+</ul>

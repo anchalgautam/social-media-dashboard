@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<div class="card shadow-sm p-4 mb-4">
+  <h2 class="mb-4">Welcome, {{ request.user.username }}</h2>
+
+  {% if request.user.profile.profile_picture %}
+    <img src="{{ request.user.profile.profile_picture.url }}" class="img-thumbnail mb-3" width="150">
+  {% else %}
+    <p><i>No profile picture uploaded.</i></p>
+  {% endif %}
+
+  <p><strong>Email:</strong> {{ request.user.email }}</p>
+  <p><strong>Twitter:</strong> {{ request.user.profile.twitter_username }}</p>
+  <p><strong>Facebook:</strong> {{ request.user.profile.facebook_username }}</p>
+
+</div>
+
+{% endblock %}

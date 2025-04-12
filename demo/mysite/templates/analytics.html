@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Analytics{% endblock %}
+{% block content %}
+
+<h2 class="mb-4">Your Post Analytics</h2>
+
+<!-- Load Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card text-bg-primary p-3 mb-3">
+      <h5>Total Scheduled Posts</h5>
+      <p class="fs-4">{{ total_posts }}</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-success p-3 mb-3">
+      <h5>Posted</h5>
+      <p class="fs-4">{{ posted_count }}</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-warning p-3 mb-3">
+      <h5>Pending</h5>
+      <p class="fs-4">{{ pending_count }}</p>
+    </div>
+  </div>
+</div>
+
+<h4 class="mt-4">Posts Per Platform</h4>
+<ul class="list-group mb-4">
+  {% for platform in platform_counts %}
+    <li class="list-group-item d-flex justify-content-between">
+      {{ platform.platform|title }}
+      <span class="badge bg-info">{{ platform.count }}</span>
+    </li>
+  {% empty %}
+    <li class="list-group-item">No platform data found.</li>
+  {% endfor %}
+</ul>
+
+<!-- Chart Visuals -->
+<h4 class="mt-4">Visual Analytics</h4>
+<div class="row">
+  <div class="col-md-6">
+    <canvas id="platformChart" width="400" height="200" class="mb-4"></canvas>
+  </div>
+  <div class="col-md-6">
+    <canvas id="statusChart" width="400" height="200"></canvas>
+  </div>
+</div>
+
+{% endblock %}
+
+<!-- Chart.js Logic -->
+<script>
+  // Bar Chart - Posts per Platform
+  const platformChart = new Chart(document.getElementById('platformChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ platform_labels|safe }},
+      datasets: [{
+        label: 'Posts per Platform',
+        data: {{ platform_values|safe }},
+        backgroundColor: ['#0d6efd', '#198754', '#ffc107'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+
+  // Pie Chart - Post Status
+  const statusChart = new Chart(document.getElementById('statusChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Posted', 'Pending'],
+      datasets: [{
+        label: 'Post Status',
+        data: [{{ posted_count }}, {{ pending_count }}],
+        backgroundColor: ['#28a745', '#ffc107']
+      }]
+    }
+  });
+</script>
